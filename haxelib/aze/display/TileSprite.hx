@@ -18,6 +18,7 @@ class TileSprite extends TileBase
 	var size:Rectangle;
 
 	var dirty:Bool;
+	var _defaultRotation:Float;
 	var _rotation:Float;
 	var _scaleX:Float;
 	var _scaleY:Float;
@@ -59,6 +60,7 @@ class TileSprite extends TileBase
 		var indices = layer.tilesheet.getAnim(tile);
 		indice = indices[0];
 		size = layer.tilesheet.getSize(indice);
+		_defaultRotation = layer.tilesheet.getRotation(indice);
 	}
 
 	#if flash
@@ -103,7 +105,7 @@ class TileSprite extends TileBase
 	}
 
 	public var rotation(get_rotation, set_rotation):Float;	
-	inline function get_rotation():Float { return _rotation; }
+	inline function get_rotation():Float { return _defaultRotation + _rotation; }
 	function set_rotation(value:Float):Float 
 	{
 		if (_rotation != value) {
