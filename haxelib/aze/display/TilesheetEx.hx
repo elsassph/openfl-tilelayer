@@ -22,6 +22,8 @@ class TilesheetEx extends Tilesheet
 	public var scale:Float;
 	var defs:Array<String>;
 	var sizes:Array<Rectangle>;
+	var rotations:Array<Bool>;
+	var rotation:Float;//rotation=0 means no rotation support
 
 	#if haxe3
 		var anims:Map<String,Array<Int>>;
@@ -33,7 +35,7 @@ class TilesheetEx extends Tilesheet
 	var bmps:Array<BitmapData>;
 	#end
 
-	public function new(img:BitmapData, textureScale:Float = 1.0)
+	public function new(img:BitmapData, textureScale:Float = 1.0, rotation:Float = 0)
 	{
 		super(img);
 
@@ -51,21 +53,26 @@ class TilesheetEx extends Tilesheet
 		#if flash
 		bmps = new Array<BitmapData>();
 		#end
+		this.rotation = rotation;
+		if (rotation != 0)
+			rotations = new Array<Bool>();
 	}
 
 	#if flash
-	public function addDefinition(name:String, size:Rectangle, bmp:BitmapData)
+	public function addDefinition(name:String, size:Rectangle, bmp:BitmapData, rotated:Bool = false)
 	{
 		defs.push(name);
 		sizes.push(size);
 		bmps.push(bmp);
+		rotations.push(rotated);
 	}
 	#else
-	public function addDefinition(name:String, size:Rectangle, rect:Rectangle, center:Point)
+	public function addDefinition(name:String, size:Rectangle, rect:Rectangle, center:Point, rotated:Bool = false)
 	{
 		defs.push(name);
 		sizes.push(size);
 		addTileRect(rect, center);
+		rotations.push(rotated);
 	}
 	#end
 
@@ -87,6 +94,12 @@ class TilesheetEx extends Tilesheet
 	{
 		if (indice < sizes.length) return sizes[indice];
 		else return new Rectangle();
+	}
+	
+	inline public function getRotation(indice:Int):Float
+	{
+		if (indice < rotations.length) return rotations[indice] ? rotation : 0;
+		else return 0;
 	}
 
 	#if flash
